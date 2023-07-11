@@ -1,0 +1,111 @@
+﻿
+<script type="text/javascript">
+    const onGET = function (url, data, successFunc, errorFunc) {
+        let settings = {
+            url: url,
+            method: 'GET',
+            dataType: '*',
+            async: true,
+            contentType: 'application/json; charset=utf-8',
+
+            success: function (response) {
+                successFunc(response);
+            },
+            error: function (response) {
+                errorFunc(response);
+            },
+        };
+
+        $.ajax(settings);
+    };
+
+    const onPOST = function (url, data, successFunc, errorFunc) {
+        let settings = {
+            url: url,
+            method: 'POST',
+            dataType: '*',
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify(data),
+            headers: {
+                'Accept': ['application/json', 'application/xml', 'text/plain', 'text/html'],
+            },
+            success: function (response) {
+                successFunc(response);
+            },
+            error: function (response) {
+                errorFunc(response);
+            },
+        };
+
+        $.ajax(settings);
+    };
+
+    const onPUT = function (url, data, successFunc, errorFunc) {
+        let settings = {
+            url: url,
+            method: 'PUT',
+            dataType: '*',
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify(data),
+            headers: {
+                'Accept': ['application/json', 'application/xml', 'text/plain', 'text/html'],
+            },
+            success: function (response) {
+                successFunc(response);
+            },
+            error: function (response) {
+                errorFunc(response);
+            },
+        };
+
+        $.ajax(settings);
+    };
+
+    const onDELETE = function (url, data, successFunc, errorFunc) {
+        let settings = {
+            url: url,
+            method: 'DELETE',
+            dataType: '*',
+            contentType: 'application/json; charset=utf-8',
+            headers: {
+                'Accept': ['application/json', 'application/xml', 'text/plain', 'text/html'],
+            },
+            success: function (response) {
+                successFunc(response);
+            },
+            error: function (response) {
+                errorFunc(response);
+            },
+        };
+
+        $.ajax(settings);
+    };
+
+    const onExecute = function (url, method, data, successFunc, errorFunc) {
+        switch (method.toUpperCase()) {
+            case 'GET':
+                onGET(url, null, successFunc, errorFunc);
+                break;
+
+            case 'POST':
+                onPOST(url, data, successFunc, errorFunc);
+                break;
+
+            case 'PUT':
+                onPUT(url, data, successFunc, errorFunc);
+                break;
+
+            case 'DELETE':
+                onDELETE(url, null, successFunc, errorFunc);
+                break;
+
+            default:
+                return;
+        }
+    };
+
+    const AjaxFunc = {
+        Execute: onExecute,
+    };
+
+</script>

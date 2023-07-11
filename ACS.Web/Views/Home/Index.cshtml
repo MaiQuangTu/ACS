@@ -1,0 +1,133 @@
+﻿@{
+    ViewData["Title"] = "Create a new short URL";
+}
+
+<br />
+
+<div class="jumbotron">
+
+    <h1>URL Shortener</h1>
+
+    <br />
+
+    <p>By entering in a URL in the text field below, we will create a short URL for you!</p>
+
+    <br />
+    <div class="form-horizontal">
+        <div class="input-group pb-4">
+            <input class="form-control" id="txtShortenerUrl" placeholder="Paste the URL to be shorten..." />
+            <span class="input-group-btn">
+                <button class="btn dhl-btn-primary" type="submit" id="btnSubmit">Shorten URL</button>
+                @*<button class="btn dhl-btn-primary" type="submit" id="btnSubmitTemp"> Temp Shorten URL</button>*@
+            </span>
+        </div>
+        <div class="input-group">
+            <span class="input-group">
+                <label id="ShortUrl" class="font-weight-bold"></label>
+            </span>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+
+<partial name="_FunctionScriptsPartial" />
+<script type="text/javascript">
+    var access_token = '@Context.Session.GetString(Constant.ACCESS_TOKEN)';
+
+    var redirecLink = '@Constant.RedirecLink';
+    var API_SERVICE = '@Constant.ACS_API_SERVER';
+
+    var Load = function () {
+
+    };
+
+    //var Submit = function (){
+    //    var longUrlStr = $('#txtShortenerUrl').val();
+    //    $('#ShortUrl').text("");
+    //    if( longUrlStr == "" || longUrlStr == null || longUrlStr.includes("http") == false){
+    //           bootbox.alert({
+    //                    size: 'medium',
+    //                    message: 'URL not true!',
+    //                    buttons: {
+    //                        ok: {
+    //                            label: 'Ok',
+    //                            className: 'dhl-btn-primary'
+    //                        }
+    //                    },
+    //                    callback: function () {
+    //                        $('#txtShortenerUrl').val("");
+    //                    }
+    //                });
+    //        return;
+    //    }
+    //    var url = API_SERVICE + 'api/ShortenerURL/GetLongURL?u=' + longUrlStr ;
+    //       AjaxFunc.Execute(url, 'Get', null, function (responseCheck) {
+    //       if(responseCheck != null){
+    //            $('#ShortUrl').text("ShortURL: " + redirecLink + responseCheck.shortUrl);
+    //       }
+    //       else{
+    //            var url = API_SERVICE + 'api/ShortenerURL/CreateShortUrl?u=' + longUrlStr ;
+    //            AjaxFunc.Execute(url, 'PUT', null, function (response) {
+    //                if(response.shortURl != null){
+    //                    $('#ShortUrl').text("ShortURL: " + response.shortURl);
+    //                }
+    //                console.log(response)
+    //            }, function (response) {
+    //                //AjaxFunc.ErrorFunc(response);
+    //            });
+    //        }
+    //    }, function (responseCheck) {
+    //        //AjaxFunc.ErrorFunc(response);
+    //    });
+    //};
+
+    var Submit = function (){
+        
+        var longUrlStr = $('#txtShortenerUrl').val();
+        let urlGet = '@Url.Action("GetLongURL", "SU")?u=' + longUrlStr;
+           //var url = API_SERVICE + 'api/ShortenerURL/GetLongURL?u=' + longUrlStr ;
+
+           AjaxFunc.Execute(urlGet, 'GET', null, function (responseCheck) {
+           if(responseCheck != null){
+                $('#ShortUrl').text("ShortURL: " + redirecLink + responseCheck.shortUrl);
+           }
+           else{
+                let urlCreate = '@Url.Action("CreateShortUrl", "SU")' + '?u=' + longUrlStr;
+                AjaxFunc.Execute(urlCreate, 'PUT', null, function (response) {
+                    if(response.shortURl != null){
+                        $('#ShortUrl').text("ShortURL: " + response.shortURl);
+                    }
+                    console.log(response)
+                }, function (response) {
+                    //AjaxFunc.ErrorFunc(response);
+                });
+            }
+        }, function (responseCheck) {
+            //AjaxFunc.ErrorFunc(response);
+        });
+    }
+
+    var IsExistUrl = function () {
+        var flag = false;
+        var longUrlStr = $('#txtShortenerUrl').val();
+        var url =  API_SERVICE + 'api/ShortenerURL/GetShortURL?u=' + longUrlStr ;
+
+        AjaxFunc.Execute(url, 'PUT', null, function (responseCheck) {
+            if(responseCheck != null){
+                flag = true
+            }
+            return flag;
+        }, function (responseCheck) {
+            //AjaxFunc.ErrorFunc(response);
+        });
+    };
+
+    $(document).ready(function () {
+        $('#btnSubmit').on('click', Submit);
+        //$('#btnSubmitTemp').on('click', tempClick);
+        Load();
+    });
+
+</script>
+}

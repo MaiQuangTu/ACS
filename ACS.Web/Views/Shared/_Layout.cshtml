@@ -1,0 +1,50 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - ACS.Web</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    @*<link rel="stylesheet" href="~/ACS.Web.styles.css" asp-append-version="true" />*@
+</head>
+    
+<body class="hold-transition layout-top-nav">
+        <!-- Navbar -->
+        <nav class="main-header navbar navbar-expand-md navbar-light dhl-bg">
+            <div class="container-fluid">
+
+                <button class="btn-lg navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
+                        aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <!-- Brand Logo -->
+                <a class="" asp-area="" asp-controller="Home" asp-action="Index">
+                    <img src="~/images/Logo.png" alt="DHL Logo" class="brand-image dhl-logo" />
+                </a>
+                <!-- /Brand Logo -->
+                <!-- Left navbar links -->
+
+
+            </div>
+        </nav>
+
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2023 - ACS.Web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Bootbox.JS -->
+    <script type="text/javascript" src="~/lib/bootbox/bootbox.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,30 @@
+{
+  "version": "1.0",
+  "defaultProvider": "cdnjs",
+  "libraries": [
+    {
+      "library": "jquery@3.6.1",
+      "destination": "wwwroot/lib/jquery/"
+    },
+    {
+      "library": "bootstrap@4.6.1",
+      "destination": "wwwroot/lib/bootstrap/"
+    },
+    {
+      "library": "bootbox.js@5.5.2",
+      "destination": "wwwroot/lib/bootbox/"
+    },
+    {
+      "library": "moment.js@2.29.1",
+      "destination": "wwwroot/lib/moment/"
+    },
+    {
+      "library": "jqueryui@1.12.1",
+      "destination": "wwwroot/lib/jquery-ui/"
+    },
+    {
+      "library": "icheck-bootstrap@3.0.1",
+      "destination": "wwwroot/lib/icheck-bootstrap/"
+    }
+  ]
+}
