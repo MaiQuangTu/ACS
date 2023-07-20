@@ -4,6 +4,7 @@
 		<TargetFramework>net6.0</TargetFramework>
 		<RootNamespace>DAL.DataAccess</RootNamespace>
 		<Nullable>enable</Nullable>
+		<ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -12,11 +13,5 @@
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.0" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <None Update="appsettings.json">
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </None>
 	</ItemGroup>
 </Project>

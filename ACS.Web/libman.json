@@ -11,6 +11,10 @@
       "destination": "wwwroot/lib/bootstrap/"
     },
     {
+      "library": "jquery.blockUI@2.70",
+      "destination": "wwwroot/lib/jquery/"
+    },
+    {
       "library": "bootbox.js@5.5.2",
       "destination": "wwwroot/lib/bootbox/"
     },

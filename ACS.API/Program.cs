@@ -1,16 +1,12 @@
-
-using ACS.Web.Common;
-using Serilog;
-using Serilog.Core;
-using Serilog.Events;
-using Serilog.Sinks.SystemConsole.Themes;
 using System.Reflection;
+using Microsoft.AspNetCore.Cors.Infrastructure;
+using ACS.API.Common;
 using LIB.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
-namespace ACS.Web
+namespace ACS.API
 {
 	public class Program
 	{
@@ -19,24 +15,18 @@ namespace ACS.Web
 			WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 			// Config Service
-			builder.Services.AddControllersWithViews();
-			builder.Services.AddSession(SessionConfig);
-
-			// Config Logging
-			builder.Logging.AddConsole();
-			builder.Logging.AddDebug();
-
-			// Config Logging
-			Logger logger = new LoggerConfiguration()
-				.MinimumLevel.Debug()
-				.MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
-				.MinimumLevel.Override("Microsoft.Hosting.Lifetime", LogEventLevel.Information)
-				.MinimumLevel.Override("System", LogEventLevel.Warning)
-				//.MinimumLevel.Override("Microsoft.AspNetCore.Authentication", LogEventLevel.Information)
-				.Enrich.FromLogContext()
-				.WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level}] {SourceContext}{NewLine}{Message:lj}{NewLine}{Exception}{NewLine}", theme: AnsiConsoleTheme.Code)
-				.CreateLogger();
-
+			builder.Services.AddControllers();
+			//builder.Services.AddAuthentication("Bearer").AddJwtBearer("Bearer", options =>
+			//{
+			//    options.Authority = "http://199.40.64.213:8081/";
+			//    options.RequireHttpsMetadata = false;
+			//    options.Audience = "Subscription";
+			//    options.TokenValidationParameters = new TokenValidationParameters
+			//    {
+			//        ValidateIssuer = false
+			//    };
+			//});
+			builder.Services.AddCors(CorsConfig);
 
 			builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 			{
@@ -52,17 +42,19 @@ namespace ACS.Web
 				};
 			});
 
-			builder.Logging.ClearProviders();
-			builder.Logging.AddSerilog(logger);
+			// Config Logging
+			builder.Logging.AddConsole();
+			builder.Logging.AddDebug();
 
-			//builder.Services.AddAuthentication(NegotiateDefaults.AuthenticationScheme).AddNegotiate();
-			//builder.Services.AddAuthorization(options => options.FallbackPolicy = options.DefaultPolicy);
-			//// Get Roles
-			//builder.Services.AddSingleton<IClaimsTransformation, ClaimsTransformer>();
+			// Set Constant Value from appsettings
+			string currentPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+			IConfigurationRoot configuration = new ConfigurationBuilder().SetBasePath(currentPath).AddJsonFile("appsettings.json").Build();
 
-			//// Set Constant Value from appsettings
-			Constant.ACS_API_SERVER = builder.Configuration["ACS_API_SERVER"];
+
+
 			Constant.RedirecLink = builder.Configuration["RedirecLink"];
+			Constant.ShortLinkAPI = builder.Configuration["ShortLinkAPI"];
+
 
 			#region Dependency Injection
 
@@ -80,33 +72,49 @@ namespace ACS.Web
 
 			WebApplication app = builder.Build();
 
-			if (!app.Environment.IsDevelopment())
-				app.UseHsts();
+
+			//app.MapGet("/{u:alpha}", (string name) => $"ShortenerURL {name}!");
+			//app.MapGet("/{name:alpha}", (string name) => "{controller=ShortenerURL}/{action=GetShortURL}/{name?}");
+			app.MapControllerRoute(
+				  name: "ShortenerURL",
+				  pattern: "/{u:string}",
+				  defaults: new { controller = "ShortenerURL", action = "GetShortURL" }
+			  );
+
+			app.UseRouting();
+
+			//app.UseEndpoints(endpoints =>
+			//{
+			//    endpoints.MapGet("/", async context =>
+			//    {
+			//        await context.Response.WriteAsync("Hello World!");
+			//    });
+			//});
 
 			app.UseStaticFiles();
 			app.UseHttpsRedirection();
-			app.UseSession();
 			app.UseRouting();
 			app.UseAuthentication();
 			app.UseAuthorization();
-
-
+			app.UseCors();
 			app.UseEndpoints(EndpointConfig);
 
 			app.Run();
 		}
+
+		private static void CorsConfig(CorsOptions options)
+		{
+			options.AddDefaultPolicy(PolicyConfig);
+		}
+
+		private static void PolicyConfig(CorsPolicyBuilder builder)
+		{
+			builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+		}
+
 		private static void EndpointConfig(IEndpointRouteBuilder builder)
 		{
-
-			//builder.MapControllerRoute("areaRoute", "{area:exists}/{controller}/{action=Index}/{id?}");
-
-			builder.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
-
-			//builder.MapControllerRoute("default", "{controller=Account}/{action=Login}/{id?}");
-		}
-		private static void SessionConfig(SessionOptions options)
-		{
-			options.IdleTimeout = TimeSpan.FromDays(1);
+			builder.MapControllers();
 		}
 
 		private static void MapRepositories(IServiceCollection collection)
@@ -130,6 +138,7 @@ namespace ACS.Web
 				}
 			}
 		}
+
 		private static void MapServices(IServiceCollection collection)
 		{
 			Assembly assembly = Assembly.GetExecutingAssembly();
@@ -150,8 +159,5 @@ namespace ACS.Web
 				}
 			}
 		}
-		
 	}
-
 }
-

@@ -83,8 +83,24 @@
     //};
 
     var Submit = function (){
-        
+        $('#ShortUrl').text("");
         var longUrlStr = $('#txtShortenerUrl').val();
+        if( longUrlStr == "" || longUrlStr == null || longUrlStr.includes("http") == false){
+               bootbox.alert({
+                        size: 'medium',
+                        message: 'URL not true!',
+                        buttons: {
+                            ok: {
+                                label: 'Ok',
+                                className: 'dhl-btn-primary'
+                            }
+                        },
+                        callback: function () {
+                            $('#txtShortenerUrl').val("");
+                        }
+                    });
+            return;
+        }
         let urlGet = '@Url.Action("GetLongURL", "SU")?u=' + longUrlStr;
            //var url = API_SERVICE + 'api/ShortenerURL/GetLongURL?u=' + longUrlStr ;
 

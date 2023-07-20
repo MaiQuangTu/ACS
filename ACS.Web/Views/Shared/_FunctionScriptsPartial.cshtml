@@ -1,6 +1,9 @@
 ﻿
+<!-- Common Func -->
+<script type="text/javascript" src="~/js/common-func.js"></script>
+
 <script type="text/javascript">
-    const onGET = function (url, data, successFunc, errorFunc) {
+const onGET = function (url, data, successFunc, errorFunc) {
         let settings = {
             url: url,
             method: 'GET',
@@ -9,13 +12,16 @@
             contentType: 'application/json; charset=utf-8',
 
             success: function (response) {
+                CommonFunc.UnBlock();
                 successFunc(response);
             },
             error: function (response) {
+                CommonFunc.UnBlock();
                 errorFunc(response);
             },
         };
 
+        CommonFunc.Block();
         $.ajax(settings);
     };
 
@@ -49,15 +55,19 @@
             data: JSON.stringify(data),
             headers: {
                 'Accept': ['application/json', 'application/xml', 'text/plain', 'text/html'],
+                'Authorization': `Bearer ${access_token}`,
             },
             success: function (response) {
+                CommonFunc.UnBlock();
                 successFunc(response);
             },
             error: function (response) {
+                CommonFunc.UnBlock();
                 errorFunc(response);
             },
         };
 
+        CommonFunc.Block();
         $.ajax(settings);
     };
 
